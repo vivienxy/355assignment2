@@ -15,7 +15,8 @@ function [force_length_regression] = get_muscle_force_length_regression()
 %     2) Normalize the data so optimal length = 1 and peak = 1. 
 %     3) Return a Regression object that  uses Gaussian basis functions.
 
-% Define data points
+% Define unnormalized data points; copied from WebPlotDigitizer
+
 data = [37.41935483870968, 9.846153846153854
     39.40860215053763, 3.692307692307679
     41.82795698924731, 2.051282051282044
@@ -164,31 +165,34 @@ data = [37.41935483870968, 9.846153846153854
     75.21505376344086, 18.25641025641025
     76.45161290322581, 8.615384615384599];
 
-% Normalization
+% Normalization; find maximum force value and corresponding length
+% Divide all force and length respective values such that the maximum force
+% and corresponding length is equal to 1.
+
+% obtain the maximum force value and corresponding length
 [max_force, max_force_index] = max(data(:,2));
 max_length = data(max_force_index, 1);
 
-% Normalize force column
+% normalize force column by dividing all values
 normalized_force = data(:,2) / max_force;
 
-% Normalize length column
+% normalize length column
 normalized_length = data(:,1) / max_length;
 
-% Display max force and length values
+% display max force and length values
 % disp('Maximum Force and Corresponding Length:')
 % disp(['Max Force: ', num2str(max_force)]);
 % disp(['Corresponding Length: ', num2str(max_length)]);
 
-% Create a new table with normalized force and length
+% create new table with normalized force and length; NOT NECESSARY
 normalized_data = [normalized_length, normalized_force];
 
 length = normalized_data(:,1);
 force = normalized_data(:,2);
 
-% Regression with "fit" function with "gauss2" option as model type
+% regression with "fit" function with "gauss2" option as model type
 
 mdl = fit(length, force, 'gauss2');
-
 force_length_regression = mdl;
 
 end
