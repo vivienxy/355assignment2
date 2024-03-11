@@ -1,9 +1,9 @@
 function [force_velocity_regression] = get_muscle_force_velocity_regression()
-% 1D regression model with Gaussian basis functions.
+% Function declaration to compute muscle force-velocity regression using a 1D regression model with Gaussian basis functions.
 
 % Input Parameters
-% data(:,1): samples of an independent variable
-% data(:,2): corresponding samples of a dependent variable
+% data(:,1): samples of an independent variable (velocity)
+% data(:,2): corresponding samples of a dependent variable (force)
 
 data = [-1.0028395556708567, 0.0024834319945283845
     -0.8858611825192801, 0.03218792009622429
@@ -28,17 +28,26 @@ data = [-1.0028395556708567, 0.0024834319945283845
     0.1946227683309354, 1.1571212943090965
     0.3313459588217258, 1.152041225442796
     0.5510200231126625, 1.204839508502158];
+    % Data matrix containing velocity and force samples
 
+% Extracting velocity and force data from the 'data' matrix
 velocity = data(:,1);
 force = data(:,2);
 
 % Ridge Regression
 % NOTE: this is different than TASK 2 of Question 1, follow the instruction
 % for TASK 2
+
+% Define Gaussian basis functions
 fun = @(x, mu, sigma) 1./(1+exp(-(x-mu)./sigma));
+
 X = [];
+% Create the design matrix X using Gaussian basis functions
 for i = -1:0.2:-0.1
-    X = [X fun(velocity, i, 0.15)];
+    X = [X fun(velocity, i, 0.15)]; % Using Gaussian basis function with mean i and sigma 0.15
 end
+
+% Perform ridge regression to fit the model
 force_velocity_regression = ridge(force, X, 1, 0);
+
 end
