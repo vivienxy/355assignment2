@@ -10,19 +10,19 @@ function [root] = get_velocity(a, lm, lt)
 
 
 % damping coefficient (see damped model in Millard et al.)
-beta = 0.1;
+%beta = 0.1;
 
 % WRITE CODE HERE TO CALCULATE VELOCITY
-alpha = 0;
-Ft = force_length_tendon(lt);
-Fpe = force_length_parallel(lm);
-Fl = get_muscle_force_length_regression();
-Fv = get_muscle_force_velocity_regression();
+[Ft] = force_length_tendon(lt);
+[Fpe] = force_length_parallel(lm);
+[Fl] = force_length_muscle(lm);
 
-vm_func = (Ft - Fpe - (a * Fl * Fv)) / beta * cos(alpha);
+final = @(Ft, Fpe, Fl, vm) (a*Fl*force_velocity_muscle(vm)+Fpe+0.1*vm-Ft);
+
+fun = @(vm) final(Ft, Fpe, Fl, vm);
+
 x0 = 0;
-
-[root] = fzero(vm_func, x0, options);
+[root] = fzero(fun, x0);
 
 end
 

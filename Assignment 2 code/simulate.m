@@ -14,19 +14,26 @@ h.resting_length_muscle = resting_length_muscle;
 h.resting_length_tendon = resting_length_tendon;
 h.f0M = f0M;
 
+total_length = h.resting_length_muscle + h.resting_length_tendon;
+
+
 %%% TASK 2 
 
-    function a = activate(T)
-        if T < 0.5
-            a = 0;
-        else 
-            a = 1;
-        end
-    end
+    % function a = act(T)
+    %     if T < 0.5
+    %         a = 0;
+    %     else 
+    %         a = 1;
+    %     end
+    % end
 
-    function dx1dt = vm_fct(time, norm_lm)
-        x1 = norm_lm;
-        dx1dt = get_velocity(activate(time), x1, h.norm_tendon_length(x1));
+    function dx1dt = vm_fct(time, norm_lm, total_length)
+        % x1 = norm_lm;
+        if time < 0.5
+            dx1dt = get_velocity(0, norm_lm, h.norm_tendon_length(total_length, norm_lm));
+        else
+            dx1dt = get_velocity(1, norm_lm, h.norm_tendon_length(total_length, norm_lm));
+        end
     end
 
 %%% TASK 3 
@@ -41,12 +48,11 @@ at = AbsTol;
 
 options = odeset('RelTol',rt,'AbsTol',at);
 
-[time, norm_lm] = ode45(@vm_fct, tspan, x1_0, options);
+[time, norm_lm] = ode45(@(t, x) vm_fct(t, x, total_length), tspan, x1_0, options);
 
 %%% TASK 4 
 % save the estimated forces in a vector called "forces"
 
-total_length = h.resting_length_muscle + h.resting_length_tendon;
 forces = h.get_force(total_length, norm_lm);
 
 %%%% Do not alter the rest (it should not be needed) %%%%%%

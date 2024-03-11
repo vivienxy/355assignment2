@@ -36,7 +36,3 @@ AbsTol = 1e-8;
 tic
 simulate(T, f0M, resting_length_muscle, resting_length_tendon, RelTol, AbsTol);
 toc
-
-
-
-
