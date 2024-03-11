@@ -14,9 +14,6 @@ beta = 0.1;
 
 % WRITE CODE HERE TO CALCULATE VELOCITY
 alpha = 0;
-a = 1;
-lm = 1;
-lt = 1.01;
 Ft = force_length_tendon(lt);
 Fpe = force_length_parallel(lm);
 Fl = get_muscle_force_length_regression();
